@@ -6,5 +6,97 @@ CS Brand Colors:
   Dark green -- color: #558920
   Light green -- color: #86af15
   Orange -- color: #ff6f0c
+  Light Orange -- color: #FF9520
   Gray -- color: #636467
 */
+
+body {
+  font-family: 'Raleway';
+  margin: 0px;
+  color: white;
+}
+
+#all-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 92vh;
+  margin: 2%;
+}
+
+#rows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#col2, #col3 {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.square {
+  background-color: grey;
+  margin: 0px;
+  padding: 5%;
+  min-width: 150px;
+}
+
+.topline {
+  font-size: 48px;
+  font-weight: 900;
+}
+
+.subtitle {
+  font-size: 18px;
+}
+
+.stat {
+  margin: 10% 5% 0% 5%;
+}
+
+#communities {
+  background-color: #ff6f0c;
+}
+
+#vet-ended {
+  background-color: #a50a51;
+}
+
+#reduction {
+  background-color: #558920;
+}
+
+#housed {
+  background-color: #12b5ea;
+}
+
+#quality-data {
+  background-color: #0494cb;
+}
+
+
+
+
+/* MEDIA BREAKPOINTS */
+
+@media only screen and (max-width: 750px) { 
+  #all-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 92vh;
+    margin: 2%;
+  }
+}
+
+@media only screen and (max-width: 450px) { 
+  #all-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 92vh;
+    margin: 2%;
+  }
+  #rows {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
