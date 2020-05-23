@@ -29,7 +29,7 @@ Promise.all([
 });
 
 function setScales(state) {
-  projection = d3.geoAlbersUsa().fitSize([1100, 600], state.geo);
+  projection = d3.geoAlbersUsa().fitSize([1059, 625], state.geo);
   path = d3.geoPath().projection(projection);
 
   state.communities = state.results.filter(d => {return d.Category === "communities"})[0].Value;
@@ -50,9 +50,9 @@ function init(state) {
   svg = d3
     .select("#communities-map")
     .append("svg")
-    .attr("viewBox", "0 0 1100 600")
+    .attr("viewBox", "0 0 1059 625")
     .append("g")
-    .attr("transform", "translate(0,0)");
+    .attr("transform", "translate(-45,0)");
 
   draw(state);
 }
@@ -96,26 +96,25 @@ function draw(state) {
     .duration(900)
     .style("opacity", "1");
 
-  /* const dot = svg
+  const dot = svg
     .selectAll(".circle")
     .data(state.mapData, d => d.Community)
     .enter()
     .append("circle")
     .attr("class", "dot")
     .attr("opacity", 0)
-    .attr("r", "3")
-    .attr("style", "stroke: white; stroke-width: 0.75px")
-    .attr("fill", "#aaa")
-    .style("transform", d => {
-      console.log(projection);
+    .attr("r", "8")
+    .attr("style", "stroke: white; stroke-width: 3px")
+    .attr("fill", "#ff6f0c")
+    .attr("transform", d => {
       const [x, y] = projection([+d.Longitude, +d.Latitude]);
-      return `translateX(${x}, ${y})`;
+      return `translate(${x}, ${y})`;
     })
     .on('mouseover', function (d) {
       // dot
       d3.select(this)
-        .attr("style", "stroke: #ff743d; stroke-width: 0.75px")
-        .attr("opacity", 1)
+        .attr("style", "stroke: #a50a51; stroke-width: 3px")
+        .attr("opacity", 0.7)
         .attr("cursor", "pointer");
       // tooltip
       d3.select('body')
@@ -124,7 +123,7 @@ function draw(state) {
         .attr('style', 'position: absolute;')
         .style('left', (d3.event.pageX + 10) + 'px')
         .style('top', d3.event.pageY + 'px')
-        .html("<b>" + d.Community + "</b><br>" + d.State + " | " + d.State)
+        .html("<b>" + d.Community + "</b>, " + d.State + " <br><b style='font-size: 12px; font-weight:400;'>Started with BFZ on " + d.startDate + "</b>")
         .style("opacity", 0)
         .transition()
         .duration(200)
@@ -133,13 +132,20 @@ function draw(state) {
     .on('mouseout', function (d) {
       // dot
       d3.select(this)
-        .attr("style", "stroke: white; stroke-width: 0.75px")
+        .attr("style", "stroke: white; stroke-width: 3px")
         .attr("opacity", 1)
         .attr("cursor", "default")
       // tooltip
       d3.selectAll(".map-tooltip")
         .remove();
-    }) */
+    })
+    .call(selection =>
+      selection
+      .attr("opacity", 0)
+      .transition(d3.easeElastic)
+      .delay(d => 10 * d.Latitude)
+      .attr("opacity", 1)
+  );
 
 }
 

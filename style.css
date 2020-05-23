@@ -12,15 +12,13 @@ CS Brand Colors:
 
 body {
   font-family: 'Raleway';
-  margin: 0px;
+  margin: 6px;
   color: white;
 }
 
 #all-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 92vh;
-  margin: 2%;
 }
 
 #rows {
@@ -34,14 +32,13 @@ body {
 }
 
 .square {
-  background-color: grey;
   margin: 0px;
-  padding: 5%;
-  min-width: 150px;
+  min-height: 300px;
 }
 
 .topline {
-  font-size: 48px;
+  font-family: 'Asap Condensed', sans-serif;
+  font-size: 55px;
   font-weight: 900;
 }
 
@@ -50,7 +47,14 @@ body {
 }
 
 .stat {
-  margin: 10% 5% 0% 5%;
+  margin: 5%;
+  position: relative;
+}
+
+.stat span {
+  position: absolute;
+	top: 190px;
+  left: 0;
 }
 
 #communities {
@@ -59,32 +63,94 @@ body {
 
 #vet-ended {
   background-color: #a50a51;
+  background-image: url("assets/01-vet.png");
+  background-position: center;
+  background-origin: content-box;
+  background-size: 400px;
+  background-repeat: no-repeat;
 }
 
 #reduction {
   background-color: #558920;
+  background-image: url("assets/02-reduction.png");
+  background-position: center;
+  background-origin: content-box;
+  background-size: 400px;
+  background-repeat: no-repeat;
 }
 
 #housed {
   background-color: #12b5ea;
+  background-image: url("assets/03-housed.png");
+  background-position: center;
+  background-origin: content-box;
+  background-size: 400px;
+  background-repeat: no-repeat;
 }
 
 #quality-data {
   background-color: #0494cb;
+  background-image: url("assets/04-quality.png");
+  background-position: center;
+  background-origin: content-box;
+  background-size: 400px;
+  background-repeat: no-repeat;
+  
+}
+
+.map-tooltip {
+  background-color: #ff6f0c;
+  color: white;
+  padding: 1%;
+  border: solid 1px white;
+  max-width: 200px;
+}
+
+#title-head {
+  font-family: 'Asap Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 77px;
+  margin: 1% 15% 0% 5%;
+  line-height: 75px;
+}
+
+#subtitle-head {
+  margin: 1% 15% 5% 5.5%;
+}
+
+#communities-topline {
+  font-family: 'Asap Condensed', sans-serif;
+  font-size: 77px;
+}
+
+#communities-stat {
+  transform: translateY(-20px);
+  margin: 0% 10% 0% 5%;
 }
 
 
 
-
 /* MEDIA BREAKPOINTS */
+@media only screen and (max-width: 1050px) { 
+  .stat span {
+    position: absolute;
+    top: 125px;
+    left: 0;
+  }
+}
+
 
 @media only screen and (max-width: 750px) { 
   #all-cols {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-    height: 92vh;
-    margin: 2%;
+  }
+
+  .stat span {
+    position: absolute;
+    top: 150px;
+    left: 0;
   }
 }
 
@@ -92,9 +158,8 @@ body {
   #all-cols {
     display: grid;
     grid-template-columns: 1fr;
-    height: 92vh;
-    margin: 2%;
   }
+  
   #rows {
     display: grid;
     grid-template-columns: 1fr;
