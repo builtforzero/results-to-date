@@ -71,29 +71,65 @@ function setScales(state) {
 
 // Draw topline numbers and map
 function draw(state) {
-  let formatNumber = d3.format(",")
+  let format = d3.format(",." + d3.precisionFixed(1) + "f")
 
   // TOPLINE NUMBERS
   d3.select("#communities-topline")
     .append("div")
+    .attr("class", "number")
     .text(state.communities)
+    .transition(d3.easeElastic)
+    .duration(1000)
+    .textTween(function(d) {
+      const i = d3.interpolate(0, +state.communities);
+      return function (t) {return format(i(t))}
+    })
 
   d3.select("#vet-topline")
     .append("div")
+    .attr("class", "number")
     .text(state.vetEnded)
+    .transition(d3.easeElastic)
+    .duration(1000)
+    .textTween(function(d) {
+      const i = d3.interpolate(0, +state.vetEnded);
+      return function (t) {return format(i(t))}
+    })
 
   d3.select("#reduction-topline")
     .append("div")
+    .attr("class", "number")
     .text(state.reduction)
+    .transition(d3.easeElastic)
+    .duration(1000)
+    .textTween(function(d) {
+      const i = d3.interpolate(0, +state.reduction);
+      return function (t) {return format(i(t))}
+    })
 
   d3.select("#housed-topline")
     .append("div")
-    .text(formatNumber(state.housed))
+    .attr("class", "number")
+    .text(format(state.housed))
+    .transition(d3.easeElastic)
+    .duration(1000)
+    .textTween(function(d) {
+      const i = d3.interpolate(0, +state.housed);
+      return function (t) {return format(i(t))}
+    })
 
   d3.select("#quality-topline")
     .append("div")
+    .attr("class", "number")
     .text(state.qualityData)
+    .transition(d3.easeElastic)
+    .duration(1000)
+    .textTween(function(d) {
+      const i = d3.interpolate(0, +state.qualityData);
+      return function (t) {return format(i(t))}
+    })
 
+  
 
   // MAP
 
