@@ -155,13 +155,16 @@ body {
 }
 
 @media only screen and (max-width: 450px) { 
+
   #all-cols {
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: 0fr 1fr;
   }
-  
+
   #rows {
     display: grid;
     grid-template-columns: 1fr;
   }
+
 }
