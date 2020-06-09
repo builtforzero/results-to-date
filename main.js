@@ -13,60 +13,71 @@ let state = {
 let svg, path, projection;
 
 // URL of public Google Sheet with data
-let url = 'https://docs.google.com/spreadsheets/d/1vr2jahJzoSfdekaPwzNDJ06VueEF1wIqVOcABH6bCdU/edit#gid=0';
+let resultsURL = 'https://docs.google.com/spreadsheets/d/1vr2jahJzoSfdekaPwzNDJ06VueEF1wIqVOcABH6bCdU/edit#gid=0';
+let mapURL = 'https://docs.google.com/spreadsheets/d/1lH3o8LHp3a-s2p004jmTTsEjLeHgt-D-E8xAZAC2eow/edit#gid=0';
+
+let a, b;
 
 // Initialize Tabletop.js with URL, then call the data load function
 function init() {
-  Tabletop.init({
-    key: url,
-    callback: loadData,
+  a = Tabletop.init({
+    key: resultsURL,
+    callback: function (data, tabletop) {
+      state.results = data;
+      console.log("Step 1: Loaded results!");
+      loadMap();
+    },
     simpleSheet: true
-  })
-}
-
-// Assign Tabletop data to state and load data files
-function loadData(data, tabletop) {
-  state.results = data;
-
-  // Load data files and assign to state, then draw
-  Promise.all([
-    d3.json("./data/usState.json"),
-    d3.csv("./data/map.csv", d3.autoType),
-  ]).then(([usaData, mapData]) => {
-    state.geo = usaData;
-    state.mapData = mapData.flat();
-    setScales(state);
-    draw(state);
   });
 
+  function loadMap() {Tabletop.init({
+    key: mapURL,
+    callback: function (data, tabletop) {
+      state.mapData = data;
+      console.log("Step 2: Loaded map!");
+      setScales(state);
+    },
+    simpleSheet: true
+  })
+  }
+  
 }
 
 init();
 
 // Set map projection and get topline numbers
 function setScales(state) {
+  Promise.all([
+    d3.json("./data/usState.json"),
+  ]).then(([usaData]) => {
+    console.log("Step 3: Loaded geography!")
+    state.geo = usaData;
+
+    // Use AlbersUSA projection, scale to canvas and geography
+    projection = d3.geoAlbersUsa().fitSize([1059, 625], state.geo);
+    path = d3.geoPath().projection(projection);
+
+    // Filter Google Sheets data for topline numbers
+    state.communities = state.results.filter(d => {
+      return d.Category === "communities"
+    })[0].Value;
+    state.vetEnded = state.results.filter(d => {
+      return d.Category === "vetEnded"
+    })[0].Value;
+    state.reduction = state.results.filter(d => {
+      return d.Category === "reduction"
+    })[0].Value;
+    state.housed = state.results.filter(d => {
+      return d.Category === "housed"
+    })[0].Value;
+    state.qualityData = state.results.filter(d => {
+      return d.Category === "qualityData"
+    })[0].Value;
+
+    draw(state);
+    
+  });
   
-  // Use AlbersUSA projection, scale to canvas and geography
-  projection = d3.geoAlbersUsa().fitSize([1059, 625], state.geo);
-  path = d3.geoPath().projection(projection);
-
-  // Filter Google Sheets data for topline numbers
-  state.communities = state.results.filter(d => {
-    return d.Category === "communities"
-  })[0].Value;
-  state.vetEnded = state.results.filter(d => {
-    return d.Category === "vetEnded"
-  })[0].Value;
-  state.reduction = state.results.filter(d => {
-    return d.Category === "reduction"
-  })[0].Value;
-  state.housed = state.results.filter(d => {
-    return d.Category === "housed"
-  })[0].Value;
-  state.qualityData = state.results.filter(d => {
-    return d.Category === "qualityData"
-  })[0].Value;
-
 }
 
 // Draw topline numbers and map
@@ -80,9 +91,11 @@ function draw(state) {
     .text(state.communities)
     .transition(d3.easeElastic)
     .duration(1000)
-    .textTween(function(d) {
+    .textTween(function (d) {
       const i = d3.interpolate(0, +state.communities);
-      return function (t) {return format(i(t))}
+      return function (t) {
+        return format(i(t))
+      }
     })
 
   d3.select("#vet-topline")
@@ -91,9 +104,11 @@ function draw(state) {
     .text(state.vetEnded)
     .transition(d3.easeElastic)
     .duration(1000)
-    .textTween(function(d) {
+    .textTween(function (d) {
       const i = d3.interpolate(0, +state.vetEnded);
-      return function (t) {return format(i(t))}
+      return function (t) {
+        return format(i(t))
+      }
     })
 
   d3.select("#reduction-topline")
@@ -102,9 +117,11 @@ function draw(state) {
     .text(state.reduction)
     .transition(d3.easeElastic)
     .duration(1000)
-    .textTween(function(d) {
+    .textTween(function (d) {
       const i = d3.interpolate(0, +state.reduction);
-      return function (t) {return format(i(t))}
+      return function (t) {
+        return format(i(t))
+      }
     })
 
   d3.select("#housed-topline")
@@ -113,9 +130,11 @@ function draw(state) {
     .text(format(state.housed))
     .transition(d3.easeElastic)
     .duration(1000)
-    .textTween(function(d) {
+    .textTween(function (d) {
       const i = d3.interpolate(0, +state.housed);
-      return function (t) {return format(i(t))}
+      return function (t) {
+        return format(i(t))
+      }
     })
 
   d3.select("#quality-topline")
@@ -124,14 +143,17 @@ function draw(state) {
     .text(state.qualityData)
     .transition(d3.easeElastic)
     .duration(1000)
-    .textTween(function(d) {
+    .textTween(function (d) {
       const i = d3.interpolate(0, +state.qualityData);
-      return function (t) {return format(i(t))}
+      return function (t) {
+        return format(i(t))
+      }
     })
 
-  
+
 
   // MAP
+  let colorScale = d3.scaleOrdinal().domain(["Yes", "No"]).range(["#a50a51", "white"]);
 
   // Assign SVG, make responsive with viewbox
   svg = d3
@@ -161,23 +183,22 @@ function draw(state) {
   const dot = svg
     // Create a dot for each community, and move to lat/long position on map
     .selectAll(".circle")
-    .data(state.mapData, d => d.Community)
+    .data(state.mapData, d => d.community)
     .enter()
     .append("circle")
     .attr("class", "dot")
     .attr("r", "8")
-    .attr("style", "stroke: white; stroke-width: 3px")
-    .attr("fill", "#ff6f0c")
+    .attr("style", "stroke: #a50a51; stroke-width: 3px")
+    .attr("fill", d => colorScale(d['fz_category']))
     .attr("transform", d => {
-      const [x, y] = projection([+d.Longitude, +d.Latitude]);
+      const [x, y] = projection([+d.longitude, +d.latitude]);
       return `translate(${x}, ${y})`;
     })
     // Mouseover event listener
     .on('mouseover', function (d) {
       // change dot
       d3.select(this)
-        .attr("style", "stroke: #a50a51; stroke-width: 3px")
-        .attr("opacity", 0.7)
+        .attr("r", "14")
         .attr("cursor", "pointer");
       // show tooltip
       d3.select('body')
@@ -186,7 +207,7 @@ function draw(state) {
         .attr('style', 'position: absolute;')
         .style('left', (d3.event.pageX + 10) + 'px')
         .style('top', d3.event.pageY + 'px')
-        .html("<b>" + d.Community + "</b>, " + d.State + " <br><b style='font-size: 12px; font-weight:400;'>Started with BFZ on " + d.startDate + "</b>")
+        .html("<b>" + d.community + "</b>, " + d.state + " <br><b style='font-size: 12px; font-weight:400;'>" + d.organization + "</b>")
         .style("opacity", 0)
         .transition(d3.easeElastic)
         .duration(200)
@@ -196,8 +217,7 @@ function draw(state) {
     .on('mouseout', function (d) {
       // reset dot
       d3.select(this)
-        .attr("style", "stroke: white; stroke-width: 3px")
-        .attr("opacity", 1)
+        .attr("r", "8")
         .attr("cursor", "default")
       // remove tooltip
       d3.selectAll(".map-tooltip")
@@ -212,7 +232,7 @@ function draw(state) {
       selection
       .attr("opacity", 0)
       .transition(d3.easeElastic)
-      .delay(d => 10 * d.Latitude)
+      .delay(d => 10 * d.latitude)
       .attr("opacity", 1)
     );
 
