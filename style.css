@@ -126,6 +126,13 @@ body {
     left: 0;
   }
 
+  .square {
+    margin: 0px;
+    min-height: 45%;
+    background-size: 320px;
+  }
+
+
 }
 
 @media only screen and (max-width: 1200px) { 
@@ -133,6 +140,7 @@ body {
   .square {
     margin: 0px;
     min-height: 45%;
+    background-size: 300px;
   }
 
   .stat span {
@@ -167,14 +175,14 @@ body {
 
   .square {
     margin: 0px;
-    min-height: 45%;
-    background-position: top;
-    background-size: 300px;
+    background-position: center;
+    background-size: 210px;
+
   }
 
   .stat span {
     position: absolute;
-    top: 100px;
+    top: 90px;
     left: 0;
   }
 
@@ -195,6 +203,10 @@ body {
   #communities-topline {
     font-family: 'Asap Condensed', sans-serif;
     font-size: 80px;
+  }
+
+  #subtitle-head {
+    transform: translateY(-10px)
   }
 
 }
