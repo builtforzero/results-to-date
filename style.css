@@ -42,10 +42,6 @@ body {
   font-weight: 900;
 }
 
-.subtitle {
-  font-size: px;
-}
-
 .stat {
   margin: 5%;
   position: relative;
@@ -167,27 +163,38 @@ body {
 }
 
 
-@media only screen and (max-width: 750px) { 
-  #all-cols {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
+@media only screen and (max-width: 660px) { 
 
   .square {
     margin: 0px;
     min-height: 45%;
     background-position: top;
+    background-size: 300px;
   }
 
   .stat span {
     position: absolute;
-    top: 150px;
+    top: 100px;
     left: 0;
   }
 
   #title-head {
-    font-size: 55px;
+    font-size: 45px;
+  }
+
+  .topline {
+    font-family: 'Asap Condensed', sans-serif;
+    font-size: 45px;
+    font-weight: 900;
+  }
+
+  .subtitle, #subtitle-head {
+    font-size: 12px;
+  }
+
+  #communities-topline {
+    font-family: 'Asap Condensed', sans-serif;
+    font-size: 80px;
   }
 
 }
@@ -219,6 +226,7 @@ body {
 
   #title-head {
     font-size: 55px;
+    line-height: 45px;
   }
 
 }

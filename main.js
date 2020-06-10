@@ -187,7 +187,7 @@ function draw(state) {
     .enter()
     .append("circle")
     .attr("class", "dot")
-    .attr("r", "8")
+    .attr("r", "12")
     .attr("style", "stroke: #a50a51; stroke-width: 3px")
     .attr("fill", d => colorScale(d['fz_category']))
     .attr("transform", d => {
@@ -217,7 +217,7 @@ function draw(state) {
     .on('mouseout', function (d) {
       // reset dot
       d3.select(this)
-        .attr("r", "8")
+        .attr("r", "10")
         .attr("cursor", "default")
       // remove tooltip
       d3.selectAll(".map-tooltip")
