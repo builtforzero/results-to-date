@@ -112,12 +112,12 @@ body {
 
 #communities-topline {
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 77px;
+  font-size: 90px;
 }
 
 #communities-stat {
-  transform: translateY(-20px);
-  margin: 0% 10% 0% 5%;
+  transform: translateY(-10px);
+  margin: 1% 0% 1% 5%;
 }
 
 
@@ -132,7 +132,7 @@ body {
 
 }
 
-@media only screen and (max-width: 1100px) { 
+@media only screen and (max-width: 1200px) { 
 
   .square {
     margin: 0px;
@@ -141,13 +141,29 @@ body {
 
   .stat span {
     position: absolute;
-    top: 100px;
+    top: 160px;
     left: 0;
   }
 
   #title-head {
     font-size: 65px;
   }
+}
+
+@media only screen and (max-width: 1100px) { 
+
+  .square {
+    margin: 0px;
+    min-height: 45%;
+    background-position: top;
+  }
+
+  .stat span {
+    position: absolute;
+    top: 120px;
+    left: 0;
+  }
+
 }
 
 
@@ -161,6 +177,7 @@ body {
   .square {
     margin: 0px;
     min-height: 45%;
+    background-position: top;
   }
 
   .stat span {
@@ -168,14 +185,14 @@ body {
     top: 150px;
     left: 0;
   }
-  
+
   #title-head {
-    font-size: 65px;
+    font-size: 55px;
   }
 
 }
 
-@media only screen and (max-width: 450px) { 
+@media only screen and (max-width: 460px) { 
 
   #all-cols {
     display: grid;
@@ -190,17 +207,18 @@ body {
 
   .square {
     margin: 0px;
-    min-height: 400px;
+    min-height: 200px;
+    background-position: top;
   }
 
   .stat span {
     position: absolute;
-    top: 250px;
+    top: 50px;
     left: 0;
   }
 
   #title-head {
-    font-size: 65px;
+    font-size: 55px;
   }
 
 }

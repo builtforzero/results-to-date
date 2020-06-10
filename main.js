@@ -159,9 +159,9 @@ function draw(state) {
   svg = d3
     .select("#communities-map")
     .append("svg")
-    .attr("viewBox", "0 0 1059 625")
+    .attr("viewBox", "0 0 1200 665")
     .append("g")
-    .attr("transform", "translate(-45,0)");
+    .attr("transform", "translate(45,0)");
 
   // Add the map projection to the SVG, fade in
   svg
