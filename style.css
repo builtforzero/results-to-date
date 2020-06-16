@@ -162,7 +162,7 @@ body {
   .square {
     margin: 0px;
     background-position: center;
-    background-size: 300px;
+    background-size: 230px;
   }
 
   #title-head {
@@ -185,9 +185,7 @@ body {
   }
 
   #communities-subtitle {
-    float: left;
-    transform: translateY(45px);
-    padding: 0% 0% 0% 2%;
+    transform: translateY(25px);
   }
 
   #subtitle-head {
@@ -196,13 +194,13 @@ body {
 
   .stat span {
     position: absolute;
-    top: 10vh;
+    top: 14vh;
     left: 0;
   }
 
 }
 
-@media only screen and (max-width: 475px) { 
+@media only screen and (max-width: 615px) { 
 
   #all-cols {
     display: grid;
