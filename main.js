@@ -8,13 +8,14 @@ let state = {
   reduction: 0,
   housed: 0,
   qualityData: 0,
+  subtitle: null,
 }
 
 let svg, path, projection;
 
 // URL of public Google Sheet with data
 let resultsURL = 'https://docs.google.com/spreadsheets/d/1vr2jahJzoSfdekaPwzNDJ06VueEF1wIqVOcABH6bCdU/edit#gid=1274736575';
-let mapURL = 'https://docs.google.com/spreadsheets/d/1lH3o8LHp3a-s2p004jmTTsEjLeHgt-D-E8xAZAC2eow/edit#gid=0';
+let mapURL = 'https://docs.google.com/spreadsheets/d/1lH3o8LHp3a-s2p004jmTTsEjLeHgt-D-E8xAZAC2eow/edit#gid=1665190279';
 
 let a, b;
 
@@ -78,6 +79,18 @@ function setScales(state) {
     
   });
   
+}
+
+function setSubtitle(vetDate, chronicDate) {
+  if(vetDate == "" && chronicDate == "") {
+    return "";
+  } else if (vetDate != "" && chronicDate == "") {
+    return `Ended <b>veteran</b> homelessness in <b>${vetDate}</b>`;
+  } else if (chronicDate != "" && vetDate == "") {
+    return `Ended <b>chronic</b> homelessness in <b>${chronicDate}</b>`;
+  } else if (vetDate != "" && chronicDate != "") {
+    return `Ended <b>veteran</b> homelessness in <b>${vetDate}</b><br>Ended <b>chronic</b> homelessness in <b>${chronicDate}</b>`;
+  }
 }
 
 // Draw topline numbers and map
@@ -153,15 +166,17 @@ function draw(state) {
 
 
   // MAP
-  let colorScale = d3.scaleOrdinal().domain(["Yes", "No"]).range(["#a50a51", "white"]);
+  let colorScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "white"]);
+
+  let textScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "#ff6f0c"]);
 
   // Assign SVG, make responsive with viewbox
   svg = d3
     .select("#communities-map")
     .append("svg")
-    .attr("viewBox", "0 0 1200 665")
+    .attr("viewBox", "0 0 1035 610")
     .append("g")
-    .attr("transform", "translate(45,0)");
+    .attr("transform", "translate(-45,0)");
 
   // Add the map projection to the SVG, fade in
   svg
@@ -194,30 +209,33 @@ function draw(state) {
       const [x, y] = projection([+d.longitude, +d.latitude]);
       return `translate(${x}, ${y})`;
     })
+    
     // Mouseover event listener
     .on('mouseover', function (d) {
       // change dot
       d3.select(this)
-        .attr("r", "14")
+        .attr("r", "18")
         .attr("cursor", "pointer");
       // show tooltip
       d3.select('body')
         .append('div')
         .attr('class', 'map-tooltip')
         .attr('style', 'position: absolute;')
+        .style('background-color', textScale(d['fz_category']))
         .style('left', (d3.event.pageX + 10) + 'px')
         .style('top', d3.event.pageY + 'px')
-        .html("<b>" + d.community + "</b>, " + d.state + " <br><b style='font-size: 12px; font-weight:400;'>" + d.organization + "</b>")
+        .html("<b>" + d.community + "</b>, " + d.state + " <br><b style='font-size: 12px; font-weight:400;'>" + setSubtitle(d.vet_fz_date, d.chronic_fz_date) + "</b>")
         .style("opacity", 0)
         .transition(d3.easeElastic)
         .duration(200)
         .style("opacity", 0.9);
     })
+
     // Mouseout event listener
     .on('mouseout', function (d) {
       // reset dot
       d3.select(this)
-        .attr("r", "10")
+        .attr("r", "12")
         .attr("cursor", "default")
       // remove tooltip
       d3.selectAll(".map-tooltip")
@@ -227,6 +245,7 @@ function draw(state) {
         .style("opacity", 0)
         .remove();
     })
+
     // Fade in dots by latitude value
     .call(selection =>
       selection

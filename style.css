@@ -33,7 +33,6 @@ body {
 
 .square {
   margin: 0px;
-  min-height: 300px;
 }
 
 .topline {
@@ -60,9 +59,8 @@ body {
 .square {
   background-position: center;
   background-origin: content-box;
-  background-size: 500px;
+  background-size: 325px;
   background-repeat: no-repeat;
-  min-height: 45%;
 }
 
 #vet-ended {
@@ -87,7 +85,6 @@ body {
 }
 
 .map-tooltip {
-  background-color: #ff6f0c;
   color: white;
   padding: 1%;
   border: solid 1px white;
@@ -109,6 +106,13 @@ body {
 #communities-topline {
   font-family: 'Asap Condensed', sans-serif;
   font-size: 90px;
+  float: left;
+}
+
+#communities-subtitle {
+  float: left;
+  transform: translateY(45px);
+  padding: 0% 0% 0% 3%;
 }
 
 #communities-stat {
@@ -116,58 +120,46 @@ body {
   margin: 1% 0% 1% 5%;
 }
 
+.stat span {
+  position: absolute;
+  top: 25vh;
+  left: 0;
+}
+
 
 
 /* MEDIA BREAKPOINTS */
-@media only screen and (max-width: 1500px) { 
-  .stat span {
-    position: absolute;
-    top: 180px;
-    left: 0;
-  }
+
+@media only screen and (max-width: 900px) { 
 
   .square {
     margin: 0px;
     min-height: 45%;
-    background-size: 320px;
-  }
-
-
-}
-
-@media only screen and (max-width: 1200px) { 
-
-  .square {
-    margin: 0px;
-    min-height: 45%;
-    background-size: 300px;
-  }
-
-  .stat span {
-    position: absolute;
-    top: 160px;
-    left: 0;
-  }
-
-  #title-head {
-    font-size: 65px;
-  }
-}
-
-@media only screen and (max-width: 1100px) { 
-
-  .square {
-    margin: 0px;
-    min-height: 45%;
+    background-size: 325px;
     background-position: top;
   }
 
-  .stat span {
-    position: absolute;
-    top: 120px;
-    left: 0;
+  #communities-subtitle {
+    float: left;
+    transform: translateY(45px);
+    padding: 0% 0% 0% 3%;
   }
 
+  #title-head {
+    font-size: 55px;
+  }
+
+  #communities-subtitle {
+    float: none;
+    transform: translateY(45px);
+    padding: 0% 0% 0% 5%;
+  }
+
+  .stat span {
+    position: absolute;
+    top: 20vh;
+    left: 0;
+  }
 }
 
 
@@ -178,12 +170,6 @@ body {
     background-position: center;
     background-size: 210px;
 
-  }
-
-  .stat span {
-    position: absolute;
-    top: 90px;
-    left: 0;
   }
 
   #title-head {
@@ -205,13 +191,25 @@ body {
     font-size: 80px;
   }
 
+  #communities-subtitle {
+    float: left;
+    transform: translateY(0px);
+    padding: 0% 0% 0% 0%;
+  }
+
   #subtitle-head {
     transform: translateY(-10px)
   }
 
+  .stat span {
+    position: absolute;
+    top: 15vh;
+    left: 0;
+  }
+
 }
 
-@media only screen and (max-width: 460px) { 
+@media only screen and (max-width: 475px) { 
 
   #all-cols {
     display: grid;
@@ -226,19 +224,30 @@ body {
 
   .square {
     margin: 0px;
-    min-height: 200px;
+    min-height: 150px;
     background-position: top;
+    background-size: 500px;
   }
 
-  .stat span {
-    position: absolute;
-    top: 50px;
-    left: 0;
+  #communities-subtitle {
+    float: left;
+    transform: translateY(0px);
+    padding: 0% 0% 0% 0%;
   }
 
   #title-head {
     font-size: 55px;
     line-height: 45px;
+  }
+
+  #subtitle-head {
+    margin: 15px;
+  }
+
+  .stat span {
+    position: absolute;
+    top: 5vh;
+    left: 0;
   }
 
 }
