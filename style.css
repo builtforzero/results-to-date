@@ -46,12 +46,6 @@ body {
   position: relative;
 }
 
-.stat span {
-  position: absolute;
-	top: 250px;
-  left: 0;
-}
-
 #communities {
   background-color: #ff6f0c;
 }
@@ -130,7 +124,7 @@ body {
 
 /* MEDIA BREAKPOINTS */
 
-@media only screen and (max-width: 900px) { 
+@media only screen and (max-width: 1280px) { 
 
   .square {
     margin: 0px;
@@ -163,13 +157,12 @@ body {
 }
 
 
-@media only screen and (max-width: 660px) { 
+@media only screen and (max-width: 768px) { 
 
   .square {
     margin: 0px;
     background-position: center;
-    background-size: 210px;
-
+    background-size: 300px;
   }
 
   #title-head {
@@ -193,8 +186,8 @@ body {
 
   #communities-subtitle {
     float: left;
-    transform: translateY(0px);
-    padding: 0% 0% 0% 0%;
+    transform: translateY(45px);
+    padding: 0% 0% 0% 2%;
   }
 
   #subtitle-head {
@@ -203,7 +196,7 @@ body {
 
   .stat span {
     position: absolute;
-    top: 15vh;
+    top: 10vh;
     left: 0;
   }
 
@@ -226,22 +219,17 @@ body {
     margin: 0px;
     min-height: 150px;
     background-position: top;
-    background-size: 500px;
+    background-size: 100%;
   }
 
   #communities-subtitle {
     float: left;
-    transform: translateY(0px);
-    padding: 0% 0% 0% 0%;
+    transform: translateY(45px);
+    padding: 0% 0% 0% 1%;
   }
 
   #title-head {
-    font-size: 55px;
-    line-height: 45px;
-  }
-
-  #subtitle-head {
-    margin: 15px;
+    font-size: 45px;
   }
 
   .stat span {
@@ -249,5 +237,41 @@ body {
     top: 5vh;
     left: 0;
   }
+
+  @media only screen and (max-width: 320px) { 
+
+    #all-cols {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 0fr 1fr;
+    }
+  
+    #rows {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+  
+    .square {
+      margin: 0px;
+      min-height: 150px;
+      background-position: top;
+      background-size: 100%;
+    }
+  
+    #communities-subtitle {
+      float: left;
+      transform: translateY(0px);
+      padding: 0% 0% 0% 0%;
+    }
+  
+    #title-head {
+      font-size: 45px;
+    }
+  
+    .stat span {
+      position: absolute;
+      top: 5vh;
+      left: 0;
+    }
 
 }

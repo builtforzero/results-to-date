@@ -8,35 +8,36 @@ let state = {
   reduction: 0,
   housed: 0,
   qualityData: 0,
-  subtitle: null,
 }
 
 let svg, path, projection;
 
-// URL of public Google Sheet with data
+// URLs of public Google Sheets with data
 let resultsURL = 'https://docs.google.com/spreadsheets/d/1vr2jahJzoSfdekaPwzNDJ06VueEF1wIqVOcABH6bCdU/edit#gid=1274736575';
 let mapURL = 'https://docs.google.com/spreadsheets/d/1lH3o8LHp3a-s2p004jmTTsEjLeHgt-D-E8xAZAC2eow/edit#gid=1665190279';
 
-let a, b;
-
-// Initialize Tabletop.js with URL, then call the data load function
+// Load data in three steps using Tabletop.js
 function init() {
-  a = Tabletop.init({
+
+  // Step 1: Load results data, then call map data loader
+  Tabletop.init({
     key: resultsURL,
     callback: function (data, tabletop) {
       state.results = data;
-      console.log("Step 1: Loaded results!");
       loadMap();
     },
     simpleSheet: true
   });
 
+  // Step 2: Load map data, then call function to set map projection and scales
+  // Sort by veteran functional zero date to show those dots on top
   function loadMap() {Tabletop.init({
     key: mapURL,
     callback: function (data, tabletop) {
-      state.mapData = data;
-      console.log("Step 2: Loaded map!");
-      setScales(state);
+      state.mapData = data.sort((a, b) => {
+        return d3.ascending(a.vet_fz_date, b.vet_fz_date)
+      });
+      setMapAndScales(state);
     },
     simpleSheet: true
   })
@@ -46,34 +47,23 @@ function init() {
 
 init();
 
-// Set map projection and get topline numbers
-function setScales(state) {
+// Step 3: Set map projection and get topline numbers, then call draw
+function setMapAndScales(state) {
   Promise.all([
     d3.json("./data/usState.json"),
   ]).then(([usaData]) => {
-    console.log("Step 3: Loaded geography!")
     state.geo = usaData;
 
     // Use AlbersUSA projection, scale to canvas and geography
     projection = d3.geoAlbersUsa().fitSize([1059, 625], state.geo);
     path = d3.geoPath().projection(projection);
 
-    // Filter Google Sheets data for topline numbers
-    state.communities = state.results.filter(d => {
-      return d.Category === "communities"
-    })[0].Value;
-    state.vetEnded = state.results.filter(d => {
-      return d.Category === "vetEnded"
-    })[0].Value;
-    state.reduction = state.results.filter(d => {
-      return d.Category === "reduction"
-    })[0].Value;
-    state.housed = state.results.filter(d => {
-      return d.Category === "housed"
-    })[0].Value;
-    state.qualityData = state.results.filter(d => {
-      return d.Category === "qualityData"
-    })[0].Value;
+    // Filter results data for topline numbers and assign to state
+    state.communities = state.results.filter(d => { return d.Category === "communities" })[0].Value;
+    state.vetEnded = state.results.filter(d => { return d.Category === "vetEnded" })[0].Value;
+    state.reduction = state.results.filter(d => { return d.Category === "reduction" })[0].Value;
+    state.housed = state.results.filter(d => { return d.Category === "housed" })[0].Value;
+    state.qualityData = state.results.filter(d => { return d.Category === "qualityData" })[0].Value;
 
     draw(state);
     
@@ -81,6 +71,7 @@ function setScales(state) {
   
 }
 
+// Set subtitle in tooltip if chronic / vet functional zero date exists
 function setSubtitle(vetDate, chronicDate) {
   if(vetDate == "" && chronicDate == "") {
     return "";
@@ -95,6 +86,7 @@ function setSubtitle(vetDate, chronicDate) {
 
 // Draw topline numbers and map
 function draw(state) {
+  // format large numbers with commas
   let format = d3.format(",." + d3.precisionFixed(1) + "f")
 
   // TOPLINE NUMBERS
@@ -166,8 +158,9 @@ function draw(state) {
 
 
   // MAP
-  let colorScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "white"]);
 
+  // Set colorscales
+  let colorScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "white"]);
   let textScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "#ff6f0c"]);
 
   // Assign SVG, make responsive with viewbox
@@ -203,7 +196,7 @@ function draw(state) {
     .append("circle")
     .attr("class", "dot")
     .attr("r", "12")
-    .attr("style", "stroke: #a50a51; stroke-width: 3px")
+    .attr("style", "stroke:#a50a51; stroke-width: 3px")
     .attr("fill", d => colorScale(d['fz_category']))
     .attr("transform", d => {
       const [x, y] = projection([+d.longitude, +d.latitude]);
@@ -252,7 +245,7 @@ function draw(state) {
       .attr("opacity", 0)
       .transition(d3.easeElastic)
       .delay(d => 10 * d.latitude)
-      .attr("opacity", 1)
+      .attr("opacity", 0.9)
     );
 
 }
