@@ -8,6 +8,7 @@ let state = {
   reduction: 0,
   housed: 0,
   qualityData: 0,
+  listActive: false,
 }
 
 let svg, path, projection;
@@ -31,18 +32,19 @@ function init() {
 
   // Step 2: Load map data, then call function to set map projection and scales
   // Sort by veteran functional zero date to show those dots on top
-  function loadMap() {Tabletop.init({
-    key: mapURL,
-    callback: function (data, tabletop) {
-      state.mapData = data.sort((a, b) => {
-        return d3.ascending(a.vet_fz_date, b.vet_fz_date)
-      });
-      setMapAndScales(state);
-    },
-    simpleSheet: true
-  })
+  function loadMap() {
+    Tabletop.init({
+      key: mapURL,
+      callback: function (data, tabletop) {
+        state.mapData = data.sort((a, b) => {
+          return d3.ascending(a.community, b.community)
+        });
+        setMapAndScales(state);
+      },
+      simpleSheet: true
+    })
   }
-  
+
 }
 
 init();
@@ -59,30 +61,77 @@ function setMapAndScales(state) {
     path = d3.geoPath().projection(projection);
 
     // Filter results data for topline numbers and assign to state
-    state.communities = state.results.filter(d => { return d.Category === "communities" })[0].Value;
-    state.vetEnded = state.results.filter(d => { return d.Category === "vetEnded" })[0].Value;
-    state.reduction = state.results.filter(d => { return d.Category === "reduction" })[0].Value;
-    state.housed = state.results.filter(d => { return d.Category === "housed" })[0].Value;
-    state.qualityData = state.results.filter(d => { return d.Category === "qualityData" })[0].Value;
+    state.communities = state.results.filter(d => {
+      return d.Category === "communities"
+    })[0].Value;
+    state.vetEnded = state.results.filter(d => {
+      return d.Category === "vetEnded"
+    })[0].Value;
+    state.reduction = state.results.filter(d => {
+      return d.Category === "reduction"
+    })[0].Value;
+    state.housed = state.results.filter(d => {
+      return d.Category === "housed"
+    })[0].Value;
+    state.qualityData = state.results.filter(d => {
+      return d.Category === "qualityData"
+    })[0].Value;
 
     draw(state);
-    
+
   });
-  
+
 }
 
 // Set subtitle in tooltip if chronic / vet functional zero date exists
 function setSubtitle(vetDate, chronicDate) {
-  if(vetDate == "" && chronicDate == "") {
+  if (vetDate == "" && chronicDate == "") {
     return "";
   } else if (vetDate != "" && chronicDate == "") {
-    return `Ended <b>veteran</b> homelessness in <b>${vetDate}</b>`;
+    return `&nbspEnded <b>veteran</b> homelessness in <b>${vetDate}</b>&nbsp`;
   } else if (chronicDate != "" && vetDate == "") {
-    return `Ended <b>chronic</b> homelessness in <b>${chronicDate}</b>`;
+    return `&nbspEnded <b>chronic</b> homelessness in <b>${chronicDate}</b>&nbsp`;
   } else if (vetDate != "" && chronicDate != "") {
-    return `Ended <b>veteran</b> homelessness in <b>${vetDate}</b><br>Ended <b>chronic</b> homelessness in <b>${chronicDate}</b>`;
+    return `&nbspEnded <b>veteran</b> homelessness in <b>${vetDate}</b>&nbsp<br>&nbspEnded <b>chronic</b> homelessness in <b>${chronicDate}</b>&nbsp`;
   }
 }
+
+function setDots(vetDate, chronicDate) {
+  if (vetDate == "" && chronicDate == "") {
+    return "";
+  } else if (vetDate != "" && chronicDate == "") {
+    return `*`;
+  } else if (chronicDate != "" && vetDate == "") {
+    return `*`;
+  } else if (vetDate != "" && chronicDate != "") {
+    return `*`;
+  }
+}
+
+function setSubtitleColor(vetDate, chronicDate) {
+  if (vetDate == "" && chronicDate == "") {
+    return "rgb(22, 22, 22)";
+  } else if (vetDate != "" && chronicDate == "") {
+    return "#a50a51";
+  } else if (chronicDate != "" && vetDate == "") {
+    return "#a50a51";
+  } else if (vetDate != "" && chronicDate != "") {
+    return "#a50a51";
+  }
+}
+
+function setBackgroundColor(vetDate, chronicDate) {
+  if (vetDate == "" && chronicDate == "") {
+    return "rgb(22, 22, 22)";
+  } else if (vetDate != "" && chronicDate == "") {
+    return "#a50a51";
+  } else if (chronicDate != "" && vetDate == "") {
+    return "#a50a51";
+  } else if (vetDate != "" && chronicDate != "") {
+    return "#a50a51";
+  }
+}
+
 
 // Draw topline numbers and map
 function draw(state) {
@@ -198,17 +247,24 @@ function draw(state) {
     .attr("r", "12")
     .attr("style", "stroke:#a50a51; stroke-width: 3px")
     .attr("fill", d => colorScale(d['fz_category']))
+    .attr("id", function (d, i) {
+      return d.community.replace(/[^A-Z0-9]/ig, "")
+    })
     .attr("transform", d => {
       const [x, y] = projection([+d.longitude, +d.latitude]);
       return `translate(${x}, ${y})`;
     })
-    
-    // Mouseover event listener
+
+    // Map mouseover event listener
     .on('mouseover', function (d) {
       // change dot
-      d3.select(this)
+      d3.selectAll("#" + this.id)
+        .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
+        .style("color", "white")
         .attr("r", "18")
-        .attr("cursor", "pointer");
+        .style("cursor", "pointer")
+        .attr("opacity", 1);
+
       // show tooltip
       d3.select('body')
         .append('div')
@@ -224,15 +280,18 @@ function draw(state) {
         .style("opacity", 0.9);
     })
 
-    // Mouseout event listener
+    // Map mouseout event listener
     .on('mouseout', function (d) {
       // reset dot
-      d3.select(this)
+      d3.selectAll("#" + this.id)
+        .style("background-color", "transparent")
+        .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
         .attr("r", "12")
         .attr("cursor", "default")
+        .attr("opacity", 0.8)
       // remove tooltip
       d3.selectAll(".map-tooltip")
-        .style("opacity", 0.9)
+        .style("opacity", 0.7)
         .transition(d3.easeElastic)
         .duration(100)
         .style("opacity", 0)
@@ -245,7 +304,161 @@ function draw(state) {
       .attr("opacity", 0)
       .transition(d3.easeElastic)
       .delay(d => 10 * d.latitude)
-      .attr("opacity", 0.9)
+      .attr("opacity", 0.8)
     );
 
+
+
+  let button = d3.select('.communities-list-btn')
+
+  button
+    .on('click', function () {
+      state.listActive = !state.listActive;
+      toggleList(state);
+    })
+
+  d3.select(".communities-list")
+    .classed("hide", true)
+    .selectAll("text")
+    .attr("class", "list-item")
+    .attr("opacity", 0.8)
+    .data(state.mapData, d => d.community)
+    .join("text")
+    .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
+    .attr("id", function (d, i) {
+      return d.community.replace(/[^A-Z0-9]/ig, "")
+    })
+    .html(d => d.community + ",&nbsp <b style='font-weight:400;'>" + d.state + "</b><br>")
+    .on("mouseover", function (d) {
+      d3.selectAll("#" + this.id)
+        .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
+        .style("color", "white")
+        .attr("r", "18")
+        .style("cursor", "pointer")
+        .attr("opacity", 1);
+
+      // show tooltip
+      d3.select('body')
+        .append('div')
+        .attr('class', 'list-tooltip')
+        .attr('style', 'position: absolute;')
+        .style('left', (d3.event.pageX + 15) + 'px')
+        .style('top', (d3.event.pageY + 15) + 'px')
+        .html(setSubtitle(d.vet_fz_date, d.chronic_fz_date))
+        .style("opacity", 0)
+        .transition(d3.easeElastic)
+        .duration(200)
+        .style("opacity", 1);
+
+    })
+    .on("mouseout", function (d) {
+      d3.selectAll("#" + this.id)
+        .style("background-color", "transparent")
+        .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
+        .attr("r", "12")
+        .attr("opacity", 0.8)
+
+      // remove tooltip
+      d3.selectAll(".list-tooltip")
+        .style("opacity", 1)
+        .transition(d3.easeElastic)
+        .duration(100)
+        .style("opacity", 0)
+        .remove();
+
+    })
+
+
+
+  let elem = document.getElementById('communities');
+  let rect = elem.getBoundingClientRect();
+
+  console.log(rect.height);
+
+  d3.select(".communities-list")
+    .style("max-height", Math.floor(rect.height) * 0.98 + "px")
+    .style("overflow", "scroll")
+
+}
+
+
+function toggleList(state) {
+
+  if (state.listActive) {
+    showList();
+    d3.select('.communities-list-btn')
+      .text("HIDE THE LIST >");
+
+  } else {
+    hideList();
+    d3.select('.communities-list-btn')
+      .text("SHOW THE LIST >");
+  }
+}
+
+function showList(state) {
+
+  d3.select("#col2")
+    .style("grid-template-rows", "1fr 1fr")
+    .transition()
+    .duration(200)
+    .style("grid-template-rows", "0fr 0fr")
+
+  d3.select("#col3")
+    .style("grid-template-rows", "1fr 1fr")
+    .transition()
+    .duration(200)
+    .style("grid-template-rows", "0fr 0fr")
+
+  hideCols();
+}
+
+function hideList(state) {
+
+  showCols();
+
+  d3.select("#col2")
+    .style("grid-template-rows", "0fr")
+    .transition()
+    .duration(200)
+    .style("grid-template-rows", "1fr 1fr")
+
+  d3.select("#col3")
+    .style("grid-template-rows", "0fr")
+    .transition()
+    .duration(200)
+    .style("grid-template-rows", "1fr 1fr")
+
+  d3.select("#rows")
+    .style("grid-template-columns", "1fr 1fr")
+
+  d3.select(".communities-list")
+    .classed("hide", true)
+
+}
+
+function hideCols() {
+  setTimeout(() => {
+    d3.select("#rows")
+    .style("grid-template-columns", "1fr")
+
+    d3.select("#col2")
+      .classed("hide", true);
+
+    d3.select("#col3")
+      .classed("hide", true)
+
+      d3.select(".communities-list")
+      .classed("hide", false)
+  }, 300)
+}
+
+function showCols() {
+  setTimeout(() => {
+    d3.select("#col2")
+      .classed("hide", false);
+
+    d3.select("#col3")
+      .classed("hide", false)
+  }, 0)
 }
