@@ -100,11 +100,14 @@ function setAsterisk(vetDate, chronicDate) {
   if (vetDate == "" && chronicDate == "") {
     return "";
   } else if (vetDate != "" && chronicDate == "") {
-    return `&nbsp 🟊 &nbsp`;
+    return `&nbsp &#x2605;
+    &nbsp`;
   } else if (chronicDate != "" && vetDate == "") {
-    return `&nbsp 🟊 &nbsp`;
+    return `&nbsp &#x2605;
+    &nbsp`;
   } else if (vetDate != "" && chronicDate != "") {
-    return `&nbsp 🟊 &nbsp`;
+    return `&nbsp &#x2605;
+    &nbsp`;
   }
 }
 
