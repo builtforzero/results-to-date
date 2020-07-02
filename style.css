@@ -61,11 +61,11 @@ body {
 
 .communities-list {
   overflow: scroll;
-  font-weight: 600;
+  font-weight: 500;
   padding: 2%;
   background-color: white;
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 12px;
+  font-size: 11.5px;
   column-count: 2;
   color: rgb(22, 22, 22);
 }
