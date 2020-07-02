@@ -65,13 +65,13 @@ body {
   padding: 2%;
   background-color: white;
   font-family: 'Asap Condensed', sans-serif;
-  font-size: 11.5px;
+  font-size: 11px;
   column-count: 2;
   color: rgb(22, 22, 22);
 }
 
 .communities-list > text {
-  line-height: 13.5px;
+  line-height: 13px;
   padding: 2px;
   margin: 5px 10px;
 }
