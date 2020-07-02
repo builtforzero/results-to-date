@@ -211,6 +211,7 @@ function draw(state) {
   // Set colorscales
   let colorScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "white"]);
   let textScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "#ff6f0c"]);
+  let colorScaleHover = d3.scaleOrdinal().domain(["Yes", ""]).range("#a50a51", "transparent")
 
   // Assign SVG, make responsive with viewbox
   svg = d3
@@ -335,7 +336,8 @@ function draw(state) {
         .style("color", "white")
         .attr("r", "18")
         .style("cursor", "pointer")
-        .attr("opacity", 1);
+        .attr("opacity", 1)
+        
 
       // show tooltip
       d3.select('body')
