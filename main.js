@@ -275,7 +275,7 @@ function draw(state) {
         .style('background-color', textScale(d['fz_category']))
         .style('left', (d3.event.pageX + 10) + 'px')
         .style('top', d3.event.pageY + 'px')
-        .html("<b>" + d.community.replace(" CoC", "") + "</b>, " + d.state + " <br><b style='font-size: 12px; font-weight:400;'>" + setSubtitle(d.vet_fz_date, d.chronic_fz_date) + "</b>")
+        .html("<b>" + d.community.replace(" CoC", "").replace(" Regional", "").replace("Countys", "County") + "</b>, " + d.state + " <br><b style='font-size: 12px; font-weight:400;'>" + setSubtitle(d.vet_fz_date, d.chronic_fz_date) + "</b>")
         .style("opacity", 0)
         .transition(d3.easeElastic)
         .duration(200)
@@ -331,7 +331,7 @@ function draw(state) {
     .attr("id", function (d, i) {
       return d.community.replace(/[^A-Z0-9]/ig, "")
     })
-    .html(d => d.community.replace(" CoC", "") + ",&nbsp <b style='font-weight:400;'>" + d.state + "</b>" + setAsterisk(d.vet_fz_date, d.chronic_fz_date) + "<br>")
+    .html(d => d.community.replace(" CoC", "").replace(" Regional", "").replace("Countys", "County") + ",&nbsp <b style='font-weight:400;'>" + d.state + "</b>" + setAsterisk(d.vet_fz_date, d.chronic_fz_date) + "<br>")
     .on("mouseover", function (d) {
       d3.selectAll("#" + this.id)
         .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
