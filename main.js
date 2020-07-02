@@ -211,7 +211,8 @@ function draw(state) {
   // Set colorscales
   let colorScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "white"]);
   let textScale = d3.scaleOrdinal().domain(["Yes", ""]).range(["#a50a51", "#ff6f0c"]);
-  let colorScaleHover = d3.scaleOrdinal().domain(["Yes", ""]).range("#a50a51", "transparent")
+
+  let fontWeight = d3.scaleOrdinal().domain(["Yes", ""]).range(["600", "300"]);
 
   // Assign SVG, make responsive with viewbox
   svg = d3
@@ -326,6 +327,7 @@ function draw(state) {
     .data(state.mapData, d => d.community)
     .join("text")
     .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
+    .style("font-weight", d => fontWeight(d['fz_category']))
     .attr("id", function (d, i) {
       return d.community.replace(/[^A-Z0-9]/ig, "")
     })
@@ -378,8 +380,9 @@ function draw(state) {
   console.log(rect.height);
 
   d3.select(".communities-list")
-    .style("max-height", Math.floor(rect.height) * 0.98 + "px")
-    .style("overflow", "scroll")
+    .style("height", Math.floor(rect.height) * 0.96 + "px")
+    
+  
 
 }
 
