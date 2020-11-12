@@ -11,7 +11,7 @@ CS Brand Colors:
 */
 
 body {
-  font-family: 'Raleway';
+  font-family: "Raleway";
   margin: 6px;
   color: white;
 }
@@ -39,7 +39,7 @@ body {
 }
 
 .topline {
-  font-family: 'Asap Condensed', sans-serif;
+  font-family: "Asap Condensed", sans-serif;
   font-size: 65px;
   font-weight: 900;
 }
@@ -48,7 +48,6 @@ body {
   margin: 5%;
   position: relative;
 }
-
 
 #communities {
   background-color: #ff6f0c;
@@ -61,11 +60,11 @@ body {
 }
 
 .communities-list {
-  overflow: scroll;
+  overflow: auto;
   font-weight: 500;
   padding: 2%;
   background-color: white;
-  font-family: 'Asap Condensed', sans-serif;
+  font-family: "Asap Condensed", sans-serif;
   font-size: 11px;
   column-count: 2;
   color: rgb(22, 22, 22);
@@ -92,12 +91,11 @@ body {
 }
 
 .communities-list-btn:hover {
-  background-color: #FF9520;
-  border: 1px solid #FF9520;
+  background-color: #ff9520;
+  border: 1px solid #ff9520;
   cursor: pointer;
   color: white;
 }
-
 
 .square {
   background-position: center;
@@ -108,23 +106,22 @@ body {
 
 #vet-ended {
   background-color: #a50a51;
-  background-image: url("assets/01-vet.png");
+  background-image: url("../assets/01-vet.png");
 }
 
 #reduction {
   background-color: #558920;
-  background-image: url("assets/02-reduction.png");
+  background-image: url("../assets/02-reduction.png");
 }
 
 #housed {
   background-color: #12b5ea;
-  background-image: url("assets/03-housed.png");
+  background-image: url("../assets/03-housed.png");
 }
 
 #quality-data {
   background-color: #0494cb;
-  background-image: url("assets/04-quality.png");
-
+  background-image: url("../assets/04-quality.png");
 }
 
 .map-tooltip {
@@ -135,7 +132,7 @@ body {
 }
 
 .list-tooltip {
-  font-family: 'Asap Condensed', sans-serif;
+  font-family: "Asap Condensed", sans-serif;
   font-size: 12px;
   color: #a50a51;
   background-color: white;
@@ -144,7 +141,7 @@ body {
 }
 
 #title-head {
-  font-family: 'Asap Condensed', sans-serif;
+  font-family: "Asap Condensed", sans-serif;
   font-weight: 700;
   font-size: 77px;
   margin: 1% 15% 0% 5%;
@@ -156,7 +153,7 @@ body {
 }
 
 #communities-topline {
-  font-family: 'Asap Condensed', sans-serif;
+  font-family: "Asap Condensed", sans-serif;
   font-size: 90px;
 }
 
@@ -180,16 +177,13 @@ body {
 
 .chronic-dot {
   font-weight: 400;
-  color: #FF9520;
+  color: #ff9520;
   font-size: 11px;
 }
-
-
 
 /* MEDIA BREAKPOINTS */
 
 @media only screen and (max-width: 1300px) {
-
   .square {
     margin: 0px;
     min-height: 45%;
@@ -208,14 +202,12 @@ body {
 
   .stat span {
     position: absolute;
-    top: 20vh;
+    top: 15vh;
     left: 0;
   }
 }
 
-
 @media only screen and (max-width: 875px) {
-
   .square {
     margin: 0px;
     background-position: center;
@@ -227,7 +219,7 @@ body {
   }
 
   .topline {
-    font-family: 'Asap Condensed', sans-serif;
+    font-family: "Asap Condensed", sans-serif;
     font-size: 45px;
     font-weight: 900;
   }
@@ -238,12 +230,12 @@ body {
   }
 
   #communities-topline {
-    font-family: 'Asap Condensed', sans-serif;
+    font-family: "Asap Condensed", sans-serif;
     font-size: 80px;
   }
 
   #subtitle-head {
-    transform: translateY(-10px)
+    transform: translateY(-10px);
   }
 
   .stat span {
@@ -251,11 +243,9 @@ body {
     top: 12vh;
     left: 0;
   }
-
 }
 
 @media only screen and (max-width: 680px) {
-
   #all-cols {
     display: grid;
     grid-template-columns: 1fr;
@@ -281,5 +271,4 @@ body {
   .communities-list-btn {
     font-size: 12px;
   }
-
 }
