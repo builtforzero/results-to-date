@@ -40,20 +40,20 @@ function getResultsData(apiKey, spreadsheetId, range) {
   if (config.some(isUndefined)) {
     console.log("Config Values Undefined!", config)
   } else {
-    fetch(getUrl).then(function(response) {
-       return response.json();
+    fetch(getUrl).then(function (response) {
+      return response.json();
     }).then(function (data) {
       const csv = Papa.unparse(data.values, {
         header: true,
         quotes: true
       })
       const json = Papa.parse(csv, {
-          header: true,
-          dynamicTyping: true,
+        header: true,
+        dynamicTyping: true,
       })
       getMapData(state.apiKey, map.spreadsheetId, map.range, json.data)
     })
-    .catch(error => console.error('Error!', error));
+      .catch(error => console.error('Error!', error));
   }
 }
 
@@ -66,20 +66,20 @@ function getMapData(apiKey, spreadsheetId, range, resultData) {
   if (config.some(isUndefined)) {
     console.log("Config Values Undefined!", config)
   } else {
-    fetch(getUrl).then(function(response) {
-       return response.json();
+    fetch(getUrl).then(function (response) {
+      return response.json();
     }).then(function (data) {
       const csv = Papa.unparse(data.values, {
         header: true,
         quotes: true
       })
       const json = Papa.parse(csv, {
-          header: true,
-          dynamicTyping: true,
+        header: true,
+        dynamicTyping: true,
       })
       setMapAndScales(state, results, json.data);
     })
-    .catch(error => console.error('Error!', error));
+      .catch(error => console.error('Error!', error));
   }
 }
 
@@ -96,6 +96,7 @@ function setMapAndScales(state, results, mapData) {
   projection = d3.geoAlbersUsa().fitSize([1059, 625], state.geo);
   path = d3.geoPath().projection(projection);
 
+  // Get the topline numbers and assign them to state values
   state.communities = results.data.filter(d => {
     return d.Category === "communities"
   })[0].Value;
@@ -128,48 +129,33 @@ function setSubtitle(vetDate, chronicDate) {
   }
 }
 
-function setTooltip(community, state, vetDate, chronicDate) {
-  const cleanCommunity = community.replace(" CoC", "").replace(" Regional", "").replace("Countys", "County");
-  return `<b>${cleanCommunity}</b>, <b style='font-weight:400;'> ${state}</b> <br><b style='font-size: 12px; font-weight:400;'> ${setSubtitle(vetDate, chronicDate)} </b>`
+// Clean community name to remove additional text
+function cleanCommunity(community) {
+  return community.replace(" CoC", "").replace(" Regional", "").replace("Countys", "County");
 }
 
+// Set the map tooltip
+function setTooltip(community, state, vetDate, chronicDate) {
+  return `<b>${cleanCommunity(community)}</b>, <b style='font-weight:400;'> ${state}</b> <br><b style='font-size: 12px; font-weight:400;'> ${setSubtitle(vetDate, chronicDate)} </b>`
+}
+
+// Set the community list star
 function setAsterisk(vetDate, chronicDate) {
   if (vetDate == undefined && chronicDate == undefined) {
     return "";
-  } else if (vetDate != undefined && chronicDate == undefined) {
+  } else if (vetDate != undefined || chronicDate != undefined) {
     return `&nbsp &#x2605;
     &nbsp`;
-  } else if (chronicDate != undefined && vetDate == undefined) {
-    return `&nbsp &#x2605;
-    &nbsp`;
-  } else if (vetDate != undefined && chronicDate != undefined) {
-    return `&nbsp &#x2605;
-    &nbsp`;
-  }
+  } else return ""
 }
 
-function setSubtitleColor(vetDate, chronicDate) {
-  if (vetDate == undefined && chronicDate == undefined) {
-    return "rgb(22, 22, 22)";
-  } else if (vetDate != undefined && chronicDate == undefined) {
-    return "#a50a51";
-  } else if (chronicDate != undefined && vetDate == undefined) {
-    return "#a50a51";
-  } else if (vetDate != undefined && chronicDate != undefined) {
-    return "#a50a51";
-  }
-}
-
+// Set the background color of dots and subtitles based on vet + chronic date
 function setBackgroundColor(vetDate, chronicDate) {
   if (vetDate == undefined && chronicDate == undefined) {
     return "rgb(22, 22, 22)";
-  } else if (vetDate != undefined && chronicDate == undefined) {
+  } else if (vetDate != undefined || chronicDate != undefined) {
     return "#a50a51";
-  } else if (chronicDate != undefined && vetDate == undefined) {
-    return "#a50a51";
-  } else if (vetDate != undefined && chronicDate != undefined) {
-    return "#a50a51";
-  }
+  } else return "rgb(22, 22, 22)";
 }
 
 
@@ -328,7 +314,7 @@ function draw(state, map, results) {
       // reset dot
       d3.selectAll("#" + this.id)
         .style("background-color", "transparent")
-        .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
+        .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
         .attr("r", radius)
         .attr("cursor", "default")
         .attr("opacity", 0.8)
@@ -344,12 +330,10 @@ function draw(state, map, results) {
     // Fade in dots by latitude value
     .call(selection =>
       selection
-      .attr("opacity", 0)
-      .transition(d3.easeElastic)
-      .attr("opacity", 0.8)
+        .attr("opacity", 0)
+        .transition(d3.easeElastic)
+        .attr("opacity", 0.8)
     );
-
-
 
   let button = d3.select('.communities-list-btn')
 
@@ -366,21 +350,20 @@ function draw(state, map, results) {
     .attr("opacity", 0.8)
     .data(map.data, d => d.community)
     .join("text")
-    .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
+    .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
     .style("font-weight", d => fontWeight(d['fz_category']))
     .attr("id", function (d, i) {
       return d.community.replace(/[^A-Z0-9]/ig, "")
     })
-    .html(d => `${d.community} ,&nbsp <b style='font-weight:400;'> ${d.state} </b> ${setAsterisk(d.vet_fz_date, d.chronic_fz_date)} <br>`)
+    .html(d => `${cleanCommunity(d.community)},&nbsp <b style='font-weight:400;'> ${d.state} </b> ${setAsterisk(d.vet_fz_date, d.chronic_fz_date)} <br>`)
     .on("mouseover", function (event, d) {
+      // change radius of dot
       d3.selectAll("#" + this.id)
         .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
         .style("color", "white")
-        .attr("r", "18")
+        .attr("r", radius * 1.5)
         .style("cursor", "pointer")
         .attr("opacity", 1)
-        
-
       // show tooltip
       d3.select('body')
         .append('div')
@@ -396,12 +379,12 @@ function draw(state, map, results) {
 
     })
     .on("mouseout", function (d) {
+      // reset radius of dot
       d3.selectAll("#" + this.id)
         .style("background-color", "transparent")
-        .style("color", d => setSubtitleColor(d.vet_fz_date, d.chronic_fz_date))
-        .attr("r", "12")
+        .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
+        .attr("r", radius)
         .attr("opacity", 0.8)
-
       // remove tooltip
       d3.selectAll(".list-tooltip")
         .style("opacity", 1)
@@ -412,26 +395,21 @@ function draw(state, map, results) {
 
     })
 
-
-
   let elem = document.getElementById('communities');
   let rect = elem.getBoundingClientRect();
 
   d3.select(".communities-list")
     .style("height", Math.floor(rect.height) * 0.96 + "px")
-    
-  
 
 }
 
+/* TOGGLE LIST SHOW / HIDE */
 
 function toggleList(state) {
-
   if (state.listActive) {
     showList();
     d3.select('.communities-list-btn')
       .text("HIDE THE LIST >");
-
   } else {
     hideList();
     d3.select('.communities-list-btn')
@@ -440,58 +418,46 @@ function toggleList(state) {
 }
 
 function showList(state) {
-
   d3.select("#col2")
     .style("grid-template-rows", "1fr 1fr")
     .transition()
     .duration(200)
     .style("grid-template-rows", "0fr 0fr")
-
   d3.select("#col3")
     .style("grid-template-rows", "1fr 1fr")
     .transition()
     .duration(200)
     .style("grid-template-rows", "0fr 0fr")
-
   hideCols();
 }
 
 function hideList(state) {
-
   showCols();
-
   d3.select("#col2")
     .style("grid-template-rows", "0fr")
     .transition()
     .duration(200)
     .style("grid-template-rows", "1fr 1fr")
-
   d3.select("#col3")
     .style("grid-template-rows", "0fr")
     .transition()
     .duration(200)
     .style("grid-template-rows", "1fr 1fr")
-
   d3.select("#rows")
     .style("grid-template-columns", "1fr 1fr")
-
   d3.select(".communities-list")
     .classed("hide", true)
-
 }
 
 function hideCols() {
   setTimeout(() => {
     d3.select("#rows")
-    .style("grid-template-columns", "1fr")
-
+      .style("grid-template-columns", "1fr")
     d3.select("#col2")
       .classed("hide", true);
-
     d3.select("#col3")
       .classed("hide", true)
-
-      d3.select(".communities-list")
+    d3.select(".communities-list")
       .classed("hide", false)
   }, 300)
 }
@@ -500,7 +466,6 @@ function showCols() {
   setTimeout(() => {
     d3.select("#col2")
       .classed("hide", false);
-
     d3.select("#col3")
       .classed("hide", false)
   }, 0)
