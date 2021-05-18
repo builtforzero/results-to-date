@@ -67,6 +67,7 @@ function getMapData(apiKey, spreadsheetId, range, resultData) {
     console.log("Config Values Undefined!", config)
   } else {
     fetch(getUrl).then(function (response) {
+      console.log(response);
       return response.json();
     }).then(function (data) {
       const csv = Papa.unparse(data.values, {
@@ -262,7 +263,8 @@ function draw(state, map, results) {
     .duration(200)
     .style("opacity", "1");
 
-  const radius = 11
+  const radiusDefault = 11
+  const opacityDefault = 0.8
 
   // Add dots to SVG and tooltip event
   const dot = svg
@@ -272,7 +274,7 @@ function draw(state, map, results) {
     .enter()
     .append("circle")
     .attr("class", "dot")
-    .attr("r", radius)
+    .attr("r", radiusDefault)
     .attr("style", "stroke:#a50a51; stroke-width: 3px;")
     .attr("fill", d => colorScale(d['fz_category']))
     .attr("id", function (d, i) {
@@ -280,8 +282,14 @@ function draw(state, map, results) {
       return id;
     })
     .attr("transform", d => {
-      const [x, y] = projection([+d.longitude, +d.latitude]);
-      return `translate(${x}, ${y})`;
+      try {
+        const [x, y] = projection([+d.longitude, +d.latitude]);
+        return `translate(${x}, ${y})`;
+      }
+      catch(err) {
+        console.log("ERROR DRAWING DOT", d.community, +d.longitude, +d.latitude);
+        console.log(err);
+      }
     })
 
     .on('mouseover', function (event, d) {
@@ -290,7 +298,7 @@ function draw(state, map, results) {
       d3.selectAll(`#${this.id}`)
         .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
         .style("color", "white")
-        .attr("r", radius * 1.5)
+        .attr("r", radiusDefault * 1.5)
         .style("cursor", "pointer")
         .attr("opacity", 1);
 
@@ -315,12 +323,12 @@ function draw(state, map, results) {
       d3.selectAll("#" + this.id)
         .style("background-color", "transparent")
         .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
-        .attr("r", radius)
+        .attr("r", radiusDefault)
         .attr("cursor", "default")
-        .attr("opacity", 0.8)
+        .attr("opacity", opacityDefault)
       // remove tooltip
       d3.selectAll(".map-tooltip")
-        .style("opacity", 0.7)
+        .style("opacity", opacityDefault)
         .transition(d3.easeElastic)
         .duration(100)
         .style("opacity", 0)
@@ -332,7 +340,7 @@ function draw(state, map, results) {
       selection
         .attr("opacity", 0)
         .transition(d3.easeElastic)
-        .attr("opacity", 0.8)
+        .attr("opacity", opacityDefault)
     );
 
   let button = d3.select('.communities-list-btn')
@@ -343,11 +351,12 @@ function draw(state, map, results) {
       toggleList(state);
     })
 
+  /* COMMUNITY LIST */
   d3.select(".communities-list")
     .classed("hide", true)
     .selectAll("text")
     .attr("class", "list-item")
-    .attr("opacity", 0.8)
+    .attr("opacity", opacityDefault)
     .data(map.data, d => d.community)
     .join("text")
     .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
@@ -361,7 +370,7 @@ function draw(state, map, results) {
       d3.selectAll("#" + this.id)
         .style("background-color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
         .style("color", "white")
-        .attr("r", radius * 1.5)
+        .attr("r", radiusDefault * 1.5)
         .style("cursor", "pointer")
         .attr("opacity", 1)
       // show tooltip
@@ -383,8 +392,8 @@ function draw(state, map, results) {
       d3.selectAll("#" + this.id)
         .style("background-color", "transparent")
         .style("color", d => setBackgroundColor(d.vet_fz_date, d.chronic_fz_date))
-        .attr("r", radius)
-        .attr("opacity", 0.8)
+        .attr("r", radiusDefault)
+        .attr("opacity", opacityDefault)
       // remove tooltip
       d3.selectAll(".list-tooltip")
         .style("opacity", 1)
